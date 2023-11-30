@@ -1,52 +1,31 @@
+import styled from '@emotion/styled';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
+import { Outlet } from 'react-router-dom';
 import 'src/App.css';
-import { useWebSocket } from 'src/hook/useWebSocket';
-import { WS_ENDPOINT } from 'src/lib/ws';
+import SideNav from './component/SideNav';
+import TopNav from './component/TopNav';
 
-function App() {
-  const [input, setInput] = useState('');
-  const [tokens, send] = useWebSocket(WS_ENDPOINT);
+const Container = styled.div`
+  height: 100%;
+  display: flex;
+`;
 
-  function keyDownHandler(e: React.KeyboardEvent) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      send(input);
-    }
-  }
+const Content = styled.div`
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 2em;
+`;
 
+export default function App() {
   return (
-    <Container>
-      <h1>Chatbot streaming Chat DEMO</h1>
-      <Form>
-        <InputGroup className="mb-3">
-          <Form.Control
-            type="text"
-            placeholder="enter your question here"
-            defaultValue={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={keyDownHandler}
-          />
-          <Button variant="outline-primary" onClick={() => send(input)}>
-            Send
-          </Button>
-        </InputGroup>
-        <Form.Group>
-          <Form.Label>AI Output</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows={3}
-            value={tokens.reduce((r, i) => r + i, '')}
-            readOnly
-          />
-        </Form.Group>
-      </Form>
-    </Container>
+    <>
+      <TopNav />
+      <Container>
+        <SideNav />
+        <Content>
+          <Outlet />
+        </Content>
+      </Container>
+    </>
   );
 }
-
-export default App;
